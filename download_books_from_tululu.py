@@ -75,8 +75,9 @@ def download_books(url_template, book_id):
     for comment in comments:
         if comments:
             comment = comment.find('span')
-            print(comment.text)
-
+            # print(comment.text)
+    book_genre = soup.find('span', class_='d_book').find('a')
+    print(book_genre.text)
 
 def main():
     script_path = pathlib.Path.cwd()
