@@ -64,12 +64,18 @@ def download_books(url_template, book_id):
     soup_response.raise_for_status()
     soup = BeautifulSoup(soup_response.text, 'lxml')
     book_description = soup.find('table').find('h1')
+    print(book_description)
     book_description = book_description.text.split(' \xa0 :: \xa0 ')
     book_title = book_description[0]
     download_txt(book_title, book_url, script_path)
     book_image = soup.find('div', class_='bookimage').find('img')['src']
     book_image_url = urljoin(url_template, book_image)
     download_images(book_image_url, script_path)
+    comments = soup.find_all('div', class_='texts')
+    for comment in comments:
+        if comments:
+            comment = comment.find('span')
+            print(comment.text)
 
 
 def main():
