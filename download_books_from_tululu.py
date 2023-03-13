@@ -26,18 +26,13 @@ def check_for_redirect(response):
         raise HTTPError(response_history)
 
 
-def download_txt(book_name, url, script_path):
-    downloading_book_response = requests.get(
-        url,
-        verify=False
-    )
-    downloading_book_response.raise_for_status()
-    check_for_redirect(downloading_book_response)
+def download_txt(book_text, script_path, book_name):
     file_path = script_path.joinpath('books')
     file_path.mkdir(exist_ok=True)
     file_name = sanitize_filename(f'{book_name}.txt')
-    with open(Path(file_path).joinpath(file_name), 'wb') as book:
-            book.write(downloading_book_response.content)
+    with open(Path(file_path).joinpath(file_name),
+              'wb') as book:
+            book.write(book_text)
 
 
 def download_images(url, script_path):
@@ -50,34 +45,56 @@ def download_images(url, script_path):
     file_path.mkdir(exist_ok=True)
     file_extension, image_name = define_extension(url)
     image_name = (f'{image_name}.{file_extension}')
-    with open(Path(file_path).joinpath(image_name), 'wb') as image:
+    with open(Path(file_path).joinpath(image_name),
+              'wb') as image:
         image.write(image_response.content)
 
 
-def download_books(url_template, book_id):
-    script_path = pathlib.Path.cwd()
-    url_options=f'txt.php?id={book_id}'
-    book_url = url_template.format(url_options)
-    url_soup_options = f'b{book_id}/'
-    url_for_soup = url_template.format(url_soup_options)
-    soup_response = requests.get(url_for_soup, verify=False)
-    soup_response.raise_for_status()
-    soup = BeautifulSoup(soup_response.text, 'lxml')
-    book_description = soup.find('table').find('h1')
-    print(book_description)
+def parse_book_page(page_html, url_template):
+    book_description = page_html.find('table').find('h1')
     book_description = book_description.text.split(' \xa0 :: \xa0 ')
     book_title = book_description[0]
-    download_txt(book_title, book_url, script_path)
-    book_image = soup.find('div', class_='bookimage').find('img')['src']
+    book_author = book_description[1]
+    book_image = page_html.find('div',
+                                class_='bookimage').find('img')['src']
     book_image_url = urljoin(url_template, book_image)
-    download_images(book_image_url, script_path)
-    comments = soup.find_all('div', class_='texts')
-    for comment in comments:
-        if comments:
-            comment = comment.find('span')
-            # print(comment.text)
-    book_genre = soup.find('span', class_='d_book').find('a')
-    print(book_genre.text)
+    parsed_comments = page_html.find_all('div', class_='texts')
+    comments = []
+    for comment in parsed_comments:
+        if parsed_comments:
+            comment = comment.find('span').text
+            comments.append(comment)
+    book_genre = page_html.find('span', class_='d_book').find('a')
+    parsed_book_description = {
+        'title': book_title,
+        'author': book_author,
+        'image_url': book_image_url,
+        'genre': book_genre.text,
+        'comments': comments        
+    }
+    return parsed_book_description
+
+
+def download_books(url_template, book_id, script_path):
+    book_url = url_template.format(f'txt.php?id={book_id}')
+    downloading_book_response = requests.get(
+        book_url,
+        verify=False
+    )
+    downloading_book_response.raise_for_status()
+    check_for_redirect(downloading_book_response)
+    book_text = downloading_book_response.content
+    parse_url = url_template.format(f'b{book_id}/')
+    parse_response = requests.get(parse_url, verify=False)
+    parse_response.raise_for_status()
+    page_html = BeautifulSoup(parse_response.text, 'lxml')
+    parsed_book_description = parse_book_page(page_html,
+                                              url_template)
+    download_txt(book_text, script_path,
+                 parsed_book_description['title'])
+    download_images(parsed_book_description['image_url'],
+                    script_path)
+
 
 def main():
     script_path = pathlib.Path.cwd()
@@ -89,7 +106,7 @@ def main():
     book_quantity = 10
     for book_id in range(1, book_quantity+1):
         try:
-            download_books(url_template, book_id)
+            download_books(url_template, book_id, script_path)
         except HTTPError:
             pass
 
