@@ -1,3 +1,4 @@
+import argparse
 import requests
 import pathlib
 import urllib
@@ -8,6 +9,18 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 from pathvalidate import sanitize_filename
+
+
+def parse_arg_main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-fst', '--first', nargs='?',
+                        help='Whitch book is the first',
+                        default="1")
+    parser.add_argument('-lst', '--last', nargs='?',
+                        help='Whitch book is the last',
+                        default='10')
+    arg = parser.parse_args()
+    return arg
 
 
 def define_extension(file_url):
@@ -103,8 +116,10 @@ def main():
     images_path = script_path.joinpath('images')
     images_path.mkdir(exist_ok=True)
     url_template = 'https://tululu.org/{}'
-    book_quantity = 10
-    for book_id in range(1, book_quantity+1):
+    args = parse_arg_main()
+    first_book = args.first
+    last_book = args.last
+    for book_id in range(int(first_book), int(last_book)+1):
         try:
             download_books(url_template, book_id, script_path)
         except HTTPError:
