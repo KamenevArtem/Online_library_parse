@@ -141,7 +141,7 @@ def main():
     last_book = args.last
     for book_id in range(first_book, last_book+1):
         try:
-            download_books(url_template, book_id, script_path)
+            download_book(url_template, book_id, script_path)
         except HTTPError as error:
             logging.error(msg=f'Была обнаружена ошибка {error}')
 
