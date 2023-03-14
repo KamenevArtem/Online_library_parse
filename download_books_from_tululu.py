@@ -40,12 +40,6 @@ def define_extension(file_url):
     return file_extension, file_name
 
 
-def check_for_errors(response):
-    response_history = response.history
-    if response_history:
-        raise HTTPError(response_history)
-
-
 def check_for_redirect(response):
     if response.is_redirect:
         raise HTTPError(response.status_code, 'Переадресация')
@@ -115,7 +109,6 @@ def download_book(url_template, book_id, script_path):
     )
     check_for_redirect(downloading_book_response)
     downloading_book_response.raise_for_status()
-    check_for_errors(downloading_book_response)
     book_text = downloading_book_response.content
     parsing_url = url_template.format(f'b{book_id}/')
     parsing_response = requests.get(parsing_url, verify=False)
