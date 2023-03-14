@@ -41,6 +41,7 @@ def define_extension(file_url):
 
 
 def check_for_redirect(response):
+    print(f'Была ли попытка переадресации? {response.is_redirect}')
     if response.is_redirect:
         raise HTTPError(response.status_code, 'Переадресация')
 
@@ -109,6 +110,7 @@ def download_book(url_template, book_id, script_path):
         params=param,
         allow_redirects=False
     )
+    print(downloading_book_response.url)
     check_for_redirect(downloading_book_response)
     downloading_book_response.raise_for_status()
     book_text = downloading_book_response.content
