@@ -96,6 +96,8 @@ def parse_book_page(page_html, book_url):
     return parsed_book_description
 
 
+@retry(ConnectionError,
+       delay=1, backoff=4, max_delay=4)
 def download_book(url_template, book_id, script_path):
     book_url = url_template.format('txt.php')
     param = {
