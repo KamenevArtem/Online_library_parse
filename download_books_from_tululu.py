@@ -2,7 +2,6 @@ import argparse
 import requests
 import pathlib
 import urllib
-import telegram
 import os
 import logging
 from pathlib import Path
@@ -52,7 +51,7 @@ def check_for_redirect(response):
         raise HTTPError(response.status_code, 'Переадресация')
 
 
-@retry((telegram.error.NetworkError, ConnectionError),
+@retry(ConnectionError,
        delay=1, backoff=4, max_delay=4)
 def download_txt(book_text, script_path, book_name):
     file_path = script_path.joinpath('books')
@@ -63,7 +62,7 @@ def download_txt(book_text, script_path, book_name):
         book.write(book_text)
 
 
-@retry((telegram.error.NetworkError, ConnectionError),
+@retry(ConnectionError,
        delay=1, backoff=4, max_delay=4)
 def download_image(url, script_path):
     image_response = requests.get(
@@ -80,7 +79,7 @@ def download_image(url, script_path):
         image.write(image_response.content)
 
 
-@retry((telegram.error.NetworkError, ConnectionError),
+@retry(ConnectionError,
        delay=1, backoff=4, max_delay=4)
 def parse_book_page(page_html, book_url):
     book_description = page_html.find('table').find('h1')
