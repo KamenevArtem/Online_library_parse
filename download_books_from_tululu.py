@@ -102,7 +102,7 @@ def parse_book_page(page_html, book_url):
     return parsed_book_description
 
 
-def download_books(url_template, book_id, script_path):
+def download_book(url_template, book_id, script_path):
     book_url = url_template.format('txt.php')
     param = {
         'id': book_id,
