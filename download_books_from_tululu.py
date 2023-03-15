@@ -110,12 +110,12 @@ def download_book(url_template, book_id, script_path):
         params=param,
         allow_redirects=False
     )
-    print(downloading_book_response.url)
     check_for_redirect(downloading_book_response)
     downloading_book_response.raise_for_status()
     book_text = downloading_book_response.content
     parsing_url = url_template.format(f'b{book_id}/')
     parsing_response = requests.get(parsing_url, verify=False)
+    check_for_redirect(parsing_response)
     parsing_response.raise_for_status()
     page_html = BeautifulSoup(parsing_response.text, 'lxml')
     parsed_book_description = parse_book_page(page_html,
