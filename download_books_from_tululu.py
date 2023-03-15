@@ -41,7 +41,6 @@ def define_extension(file_url):
 
 
 def check_for_redirect(response):
-    print(f'Была ли попытка переадресации? {response.is_redirect}')
     if response.is_redirect:
         raise HTTPError(response.status_code, 'Переадресация')
 
