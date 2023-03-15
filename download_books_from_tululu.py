@@ -45,7 +45,7 @@ def check_for_redirect(response):
         raise HTTPError(response.status_code, 'Переадресация')
 
 
-@retry(ConnectionError,
+@retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
 def download_txt(book_text, script_path, book_name):
     file_path = script_path.joinpath('books')
@@ -56,7 +56,7 @@ def download_txt(book_text, script_path, book_name):
         book.write(book_text)
 
 
-@retry(ConnectionError,
+@retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
 def download_image(url, script_path):
     image_response = requests.get(
@@ -73,7 +73,7 @@ def download_image(url, script_path):
         image.write(image_response.content)
 
 
-@retry(ConnectionError,
+@retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
 def parse_book_page(page_html, book_url):
     book_description = page_html.find('table').find('h1')
@@ -96,7 +96,7 @@ def parse_book_page(page_html, book_url):
     return parsed_book_description
 
 
-@retry(ConnectionError,
+@retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
 def download_book(url_template, book_id, script_path):
     book_url = url_template.format('txt.php')
