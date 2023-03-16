@@ -73,8 +73,6 @@ def download_image(url, script_path):
         image.write(image_response.content)
 
 
-@retry(TimeoutError, ConnectionError,
-       delay=1, backoff=4, max_delay=4)
 def parse_book_page(page_html, book_url):
     book_description = page_html.find('table').find('h1')
     book_description = book_description.text.split(' \xa0 :: \xa0 ')
