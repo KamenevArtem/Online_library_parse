@@ -10,10 +10,11 @@ def create_book_link(url_template):
     parsing_response = requests.get(books_url, verify=False)
     parsing_response.raise_for_status()
     page_html = BeautifulSoup(parsing_response.text, 'lxml')
-    book = page_html.find('table', class_='d_book').find('td').find('a')['href']
-    book_url = urljoin(url_template, book)
-    print(book_url)
-
+    books = page_html.find_all('table', class_='d_book')
+    for book in books:
+        book = book.find('td').find('a')['href']
+        book_url = urljoin(url_template, book)
+        print(book_url)
 
 
 def main():
