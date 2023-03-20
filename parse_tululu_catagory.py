@@ -5,21 +5,28 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 
-def create_book_link(url_template):
-    books_url = 'https://tululu.org/l55/'
-    parsing_response = requests.get(books_url, verify=False)
-    parsing_response.raise_for_status()
-    page_html = BeautifulSoup(parsing_response.text, 'lxml')
+def create_book_links(page_html, url_template):
     books = page_html.find_all('table', class_='d_book')
-    for book in books:
-        book = book.find('td').find('a')['href']
-        book_url = urljoin(url_template, book)
-        print(book_url)
+    book_url = [urljoin(url_template, book.find('td').find('a')['href'])
+                for book in books
+                ]
+    print(book_url)
+
+
+def parse_pages(pages_quantity, url_template):
+    page_url_template = 'https://tululu.org/l55/{}'
+    for page_number in range(1, pages_quantity+1):
+        page_url = page_url_template.format(page_number)
+        parsing_response = requests.get(page_url, verify=False)
+        parsing_response.raise_for_status()
+        page_html = BeautifulSoup(parsing_response.text, 'lxml')
+        create_book_links(page_html, url_template)
 
 
 def main():
     url_template = 'https://tululu.org/'
-    create_book_link(url_template)
+    pages_quantity = 10
+    parse_pages(pages_quantity, url_template)
 
 
 if __name__ == '__main__':
