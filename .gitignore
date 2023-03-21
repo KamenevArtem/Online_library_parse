@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+book_descriptions.json
 
 # C extensions
 *.so
