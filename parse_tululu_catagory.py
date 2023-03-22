@@ -16,8 +16,8 @@ from pathvalidate import sanitize_filename
 
 def parse_book_ids(page_html):
     url = 'https://tululu.org/'
-    books = page_html.find_all('table', class_='d_book')
-    book_urls = [urljoin(url, book.find('td').find('a')['href'])
+    books = page_html.select('table.d_book')
+    book_urls = [urljoin(url, book.select_one('td a')['href'])
                 for book in books
                 ]
     book_ids = [book_url.split('b')[1] for book_url in book_urls]
@@ -81,16 +81,15 @@ def download_image(url, script_path):
 
 
 def parse_book_page(page_html, book_url, book_descriptions):
-    book_description = page_html.find('table').find('h1')
+    book_description = page_html.select_one('table h1')
     book_description = book_description.text.split(' \xa0 :: \xa0 ')
     book_title, book_author = book_description
-    book_image = page_html.find(
-        'div', class_='bookimage').find('img')['src']
+    book_image = page_html.select_one('div.bookimage img')['src']
     book_image_url = urljoin(book_url, book_image)
-    parsed_comments = page_html.find_all('div', class_='texts')
-    comments = [comment.find('span').text
+    parsed_comments = page_html.select('div.texts')
+    comments = [comment.select_one('span').text
                 for comment in parsed_comments]
-    book_genres = page_html.find('span', class_='d_book').find('a')
+    book_genres = page_html.select_one('span.d_book a')
     parsed_book_description = {
         'title': book_title,
         'author': book_author,
@@ -99,13 +98,6 @@ def parse_book_page(page_html, book_url, book_descriptions):
         'comments': comments,
     }    
     book_descriptions.append(parsed_book_description)
-    # parsed_book_description_json = json.dumps(
-    #     parsed_book_description,
-    #     ensure_ascii=False
-    #     )
-    # print(parsed_book_description_json)
-    # with open('book_descriptions.json', 'w', encoding='utf8') as json_file:
-    #     json_file.write(parsed_book_description_json)
     return parsed_book_description, book_descriptions
 
 
@@ -149,7 +141,7 @@ def main():
     images_path = script_path.joinpath('images')
     images_path.mkdir(exist_ok=True)
     url_template = 'https://tululu.org/{}'
-    pages_quantity = 4
+    pages_quantity = 1
     book_ids = parse_pages(pages_quantity)
     book_descriptions = []
     for book_id in book_ids:
@@ -167,7 +159,6 @@ def main():
                     indent=4,
                     sort_keys=True,
                     )
-                pprint(book_descriptions)
                 with open('book_descriptions.json', 'w', encoding='utf8') as json_file:
                     json_file.write(book_descriptions_json)
         except HTTPError as error:
