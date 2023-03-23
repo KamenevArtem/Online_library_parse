@@ -4,7 +4,7 @@ import urllib
 import os
 import logging
 import json
-from pprint import pprint
+import argparse
 from pathlib import Path
 from requests import HTTPError
 from bs4 import BeautifulSoup
@@ -12,6 +12,23 @@ from retry import retry
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 from pathvalidate import sanitize_filename
+
+
+def parse_arg_main():
+    parser = argparse.ArgumentParser(
+        description='Download books from tululu.org'
+        )
+    parser.add_argument('-stp', '--start_page', nargs='?',
+                        help='First page to download',
+                        default=1,
+                        type=int
+                        )
+    parser.add_argument('-enp', '--end_page', nargs='?',
+                        help='Last page to download',
+                        type=int
+                        )
+    arg = parser.parse_args()
+    return arg
 
 
 def parse_book_ids(page_html):
@@ -24,11 +41,14 @@ def parse_book_ids(page_html):
     return book_ids
 
 
-def parse_pages(pages_quantity):
+def parse_pages(start_page, end_page):
     page_url_template = 'https://tululu.org/l55/{}'
-
     book_ids = []
-    for page_number in range(1, pages_quantity+1):
+    if end_page == None:
+        end_page = start_page + 10
+    if end_page <= start_page:
+        raise HTTPError('Параметр "end_page" должен быть больше "start_page"')
+    for page_number in range(start_page, end_page):
         page_url = page_url_template.format(page_number)
         parsing_response = requests.get(page_url, verify=False)
         parsing_response.raise_for_status()
@@ -141,8 +161,10 @@ def main():
     images_path = script_path.joinpath('images')
     images_path.mkdir(exist_ok=True)
     url_template = 'https://tululu.org/{}'
-    pages_quantity = 1
-    book_ids = parse_pages(pages_quantity)
+    args = parse_arg_main()
+    start_page = args.start_page
+    end_page = args.end_page
+    book_ids = parse_pages(start_page, end_page)
     book_descriptions = []
     for book_id in book_ids:
         try:
