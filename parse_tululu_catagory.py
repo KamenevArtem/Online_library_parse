@@ -27,6 +27,23 @@ def parse_arg_main():
                         help='Last page to download',
                         type=int
                         )
+    parser.add_argument('-df', '--dest_folder',
+                        help='Путь к каталогу с результатами парсинга',
+                        action='store_true',
+                        )
+    parser.add_argument('-si', '--skip_imgs',
+                        help='Не скачивать обложки книг',
+                        action='store_true',
+                        )
+    parser.add_argument('-st', '--skip_txts',
+                        help='Не скачивать тексты книг',
+                        action='store_true',
+                        )
+    parser.add_argument('-jp', '--json_path',
+                        help=f'Полный путь к json файлу,'
+                        'содержащему данные по всем скачанным книгам',
+                        action='store_true',
+                        )
     arg = parser.parse_args()
     return arg
 
@@ -74,8 +91,8 @@ def check_for_redirect(response):
 
 @retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
-def download_txt(book_text, script_path, book_name):
-    file_path = script_path.joinpath('books')
+def download_txt(book_text, books_path, book_name):
+    file_path = books_path.joinpath('books_txts')
     file_path.mkdir(exist_ok=True)
     file_name = sanitize_filename(f'{book_name}.txt')
     with open(Path(file_path).joinpath(file_name),
@@ -85,13 +102,13 @@ def download_txt(book_text, script_path, book_name):
 
 @retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
-def download_image(url, script_path):
+def download_image(url, books_path):
     image_response = requests.get(
         url,
         verify=False
     )
     image_response.raise_for_status()
-    file_path = script_path.joinpath('images')
+    file_path = books_path.joinpath('images')
     file_path.mkdir(exist_ok=True)
     file_extension, image_name = define_extension(url)
     image_name = (f'{image_name}.{file_extension}')
@@ -123,7 +140,12 @@ def parse_book_page(page_html, book_url, book_descriptions):
 
 @retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
-def download_book_descriptions(url_template, book_id, script_path, book_descriptions):
+def download_book_descriptions(
+    url_template, book_id,
+    script_path, book_descriptions,
+    skip_txts,
+    skip_imgs
+    ):
     book_url = url_template.format('txt.php')
     param = {
         'id': book_id,
@@ -147,10 +169,16 @@ def download_book_descriptions(url_template, book_id, script_path, book_descript
         parsing_url,
         book_descriptions
         )
-    download_txt(book_text, script_path,
-                parsed_book_description['title'])
-    download_image(parsed_book_description['image_url'],
-                script_path)
+    if skip_txts:
+        pass
+    else:
+        download_txt(book_text, script_path,
+                    parsed_book_description['title'])
+    if skip_imgs:
+        pass
+    else:
+        download_image(parsed_book_description['image_url'],
+                    script_path)
     return(book_descriptions)
 
 
@@ -158,12 +186,19 @@ def main():
     script_path = pathlib.Path.cwd()
     books_path = script_path.joinpath('books')
     books_path.mkdir(exist_ok=True)
-    images_path = script_path.joinpath('images')
-    images_path.mkdir(exist_ok=True)
+    book_descriptions_json_path = Path(books_path).joinpath(
+        'book_descriptions.json'
+        )
     url_template = 'https://tululu.org/{}'
     args = parse_arg_main()
     start_page = args.start_page
     end_page = args.end_page
+    skip_txts = args.skip_txts
+    skip_imgs = args.skip_imgs
+    if args.json_path:
+        print(book_descriptions_json_path)
+    if args.dest_folder:
+        print(books_path)
     book_ids = parse_pages(start_page, end_page)
     book_descriptions = []
     for book_id in book_ids:
@@ -171,8 +206,10 @@ def main():
             book_descriptions = download_book_descriptions(
                 url_template,
                 book_id,
-                script_path,
-                book_descriptions
+                books_path,
+                book_descriptions,
+                skip_txts,
+                skip_imgs
                 )
             if book_id == book_ids[-1]:
                 book_descriptions_json = json.dumps(
@@ -181,7 +218,8 @@ def main():
                     indent=4,
                     sort_keys=True,
                     )
-                with open('book_descriptions.json', 'w', encoding='utf8') as json_file:
+                with open(book_descriptions_json_path,
+                        'w', encoding='utf8') as json_file:
                     json_file.write(book_descriptions_json)
         except HTTPError as error:
             logging.error(msg=f'Была обнаружена ошибка {error}')
