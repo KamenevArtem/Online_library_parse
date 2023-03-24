@@ -86,9 +86,8 @@ def parse_pages(start_page, end_page):
         check_for_redirect(parsing_response)
         parsing_response.raise_for_status()
         page_html = BeautifulSoup(parsing_response.text, 'lxml')
-        book_ids.append(parse_book_ids(page_html))
-    flat_list_of_ids = [book_id for page_ids in book_ids
-                        for book_id in page_ids]
+        book_ids.extend(parse_book_ids(page_html))
+    flat_list_of_ids = [book_id for book_id in book_ids]
     return flat_list_of_ids
 
 
