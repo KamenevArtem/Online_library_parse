@@ -3,12 +3,12 @@ import json
 import logging
 import os
 import urllib
+from urllib.parse import urljoin
+from urllib.parse import urlparse
+
 
 import requests
 import pathlib
-
-from urllib.parse import urljoin
-from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from pathlib import Path
 from pathvalidate import sanitize_filename
