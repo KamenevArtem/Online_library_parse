@@ -75,7 +75,8 @@ def check_pages_numbers(check):
         return check(start_page, end_page)
     return checking_parameters
 
-
+@retry(TimeoutError, ConnectionError,
+       delay=1, backoff=4, max_delay=4)
 @check_pages_numbers
 def parse_pages(start_page, end_page):
     page_url_template = 'https://tululu.org/l55/{}'
