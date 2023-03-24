@@ -1,17 +1,19 @@
+import argparse
+import json
+import logging
+import os
+import urllib
+
 import requests
 import pathlib
-import urllib
-import os
-import logging
-import json
-import argparse
-from pathlib import Path
-from requests import HTTPError
-from bs4 import BeautifulSoup
-from retry import retry
+
 from urllib.parse import urljoin
 from urllib.parse import urlparse
+from bs4 import BeautifulSoup
+from pathlib import Path
 from pathvalidate import sanitize_filename
+from requests import HTTPError
+from retry import retry
 
 
 def parse_arg_main():
@@ -40,7 +42,7 @@ def parse_arg_main():
                         action='store_true',
                         )
     parser.add_argument('-jp', '--json_path',
-                        help=f'Полный путь к json файлу,'
+                        help='Полный путь к json файлу,'
                         'содержащему данные по всем скачанным книгам',
                         action='store_true',
                         )
@@ -52,8 +54,7 @@ def parse_book_ids(page_html):
     url = 'https://tululu.org/'
     books = page_html.select('table.d_book')
     book_urls = [urljoin(url, book.select_one('td a')['href'])
-                for book in books
-                ]
+                 for book in books]
     book_ids = [book_url.split('b')[1] for book_url in book_urls]
     return book_ids
 
@@ -61,7 +62,7 @@ def parse_book_ids(page_html):
 def parse_pages(start_page, end_page):
     page_url_template = 'https://tululu.org/l55/{}'
     book_ids = []
-    if end_page == None:
+    if end_page is None:
         end_page = start_page + 10
     if end_page <= start_page:
         raise HTTPError('Параметр "end_page" должен быть больше "start_page"')
@@ -71,7 +72,8 @@ def parse_pages(start_page, end_page):
         parsing_response.raise_for_status()
         page_html = BeautifulSoup(parsing_response.text, 'lxml')
         book_ids.append(parse_book_ids(page_html))
-    flat_list_of_ids = [book_id for page_ids in book_ids for book_id in page_ids]
+    flat_list_of_ids = [book_id for page_ids in book_ids
+                        for book_id in page_ids]
     return flat_list_of_ids
 
 
@@ -133,19 +135,16 @@ def parse_book_page(page_html, book_url, book_descriptions):
         'image_url': book_image_url,
         'genre': book_genres.text,
         'comments': comments,
-    }    
+    }
     book_descriptions.append(parsed_book_description)
     return parsed_book_description, book_descriptions
 
 
 @retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
-def download_book_descriptions(
-    url_template, book_id,
-    script_path, book_descriptions,
-    skip_txts,
-    skip_imgs
-    ):
+def download_book_descriptions(url_template, book_id,
+                               script_path, book_descriptions,
+                               skip_txts, skip_imgs):
     book_url = url_template.format('txt.php')
     param = {
         'id': book_id,
@@ -173,12 +172,12 @@ def download_book_descriptions(
         pass
     else:
         download_txt(book_text, script_path,
-                    parsed_book_description['title'])
+                     parsed_book_description['title'])
     if skip_imgs:
         pass
     else:
         download_image(parsed_book_description['image_url'],
-                    script_path)
+                       script_path)
     return book_descriptions
 
 
@@ -219,7 +218,7 @@ def main():
                     sort_keys=True,
                     )
                 with open(book_descriptions_json_path,
-                        'w', encoding='utf8') as json_file:
+                          'w', encoding='utf8') as json_file:
                     json_file.write(book_descriptions_json)
         except HTTPError as error:
             logging.error(msg=f'Была обнаружена ошибка {error}')
