@@ -177,14 +177,10 @@ def download_book_descriptions(url_template, book_id,
         parsing_url
         )
     book_descriptions.append(parsed_book_description)
-    if skip_txts:
-        pass
-    else:
+    if not skip_txts:
         download_txt(book_text, script_path,
                      parsed_book_description['title'])
-    if skip_imgs:
-        pass
-    else:
+    if not skip_imgs:
         download_image(parsed_book_description['image_url'],
                        script_path)
     return book_descriptions
