@@ -222,18 +222,17 @@ def main():
                 skip_txts,
                 skip_imgs
                 )
-            if book_id == book_ids[-1]:
-                book_descriptions_json = json.dumps(
-                    book_descriptions,
-                    ensure_ascii=False,
-                    indent=4,
-                    sort_keys=True,
-                    )
-                with open(book_descriptions_json_path,
-                          'w', encoding='utf8') as json_file:
-                    json_file.write(book_descriptions_json)
         except HTTPError as error:
             logging.error(msg=f'Была обнаружена ошибка {error}')
+    book_descriptions_json = json.dumps(
+        book_descriptions,
+        ensure_ascii=False,
+        indent=4,
+        sort_keys=True,
+        )
+    with open(book_descriptions_json_path,
+                'w', encoding='utf8') as json_file:
+        json_file.write(book_descriptions_json)
 
 
 if __name__ == '__main__':
