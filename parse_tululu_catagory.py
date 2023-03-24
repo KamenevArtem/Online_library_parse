@@ -147,7 +147,7 @@ def parse_book_page(page_html, book_url, book_descriptions):
         'comments': comments,
     }
     book_descriptions.append(parsed_book_description)
-    return parsed_book_description, book_descriptions
+    return parsed_book_description
 
 
 @retry(TimeoutError, ConnectionError,
@@ -173,7 +173,7 @@ def download_book_descriptions(url_template, book_id,
     check_for_redirect(parsing_response)
     parsing_response.raise_for_status()
     page_html = BeautifulSoup(parsing_response.text, 'lxml')
-    parsed_book_description, book_descriptions = parse_book_page(
+    parsed_book_description = parse_book_page(
         page_html,
         parsing_url,
         book_descriptions
