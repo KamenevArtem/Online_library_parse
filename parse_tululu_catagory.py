@@ -194,10 +194,12 @@ def main():
     end_page = args.end_page
     skip_txts = args.skip_txts
     skip_imgs = args.skip_imgs
+    logging.getLogger().setLevel(logging.INFO)
     if args.json_path:
-        print(book_descriptions_json_path)
+        logging.info(f'Путь к json файлу:' 
+                     f'{book_descriptions_json_path}')
     if args.dest_folder:
-        print(books_path)
+        logging.info(f'Путь к скаченным книгам {books_path}')
     book_ids = parse_pages(start_page, end_page)
     book_descriptions = []
     for book_id in book_ids:
