@@ -129,7 +129,7 @@ def download_image(url, books_path):
         image.write(image_response.content)
 
 
-def parse_book_page(page_html, book_url, book_descriptions):
+def parse_book_page(page_html, book_url):
     book_description = page_html.select_one('table h1')
     book_description = book_description.text.split(' \xa0 :: \xa0 ')
     book_title, book_author = book_description
@@ -146,7 +146,6 @@ def parse_book_page(page_html, book_url, book_descriptions):
         'genre': book_genres.text,
         'comments': comments,
     }
-    book_descriptions.append(parsed_book_description)
     return parsed_book_description
 
 
@@ -175,9 +174,9 @@ def download_book_descriptions(url_template, book_id,
     page_html = BeautifulSoup(parsing_response.text, 'lxml')
     parsed_book_description = parse_book_page(
         page_html,
-        parsing_url,
-        book_descriptions
+        parsing_url
         )
+    book_descriptions.append(parsed_book_description)
     if skip_txts:
         pass
     else:
