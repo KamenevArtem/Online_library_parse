@@ -59,13 +59,22 @@ def parse_book_ids(page_html):
     return book_ids
 
 
+def check_pages_numbers(check):
+    def checking_parameters(start_page, end_page):
+        if end_page is None:
+            end_page = start_page + 10
+            return end_page
+        if end_page <= start_page:
+            raise HTTPError('Параметр "end_page" должен быть больше'
+                            '"start_page"')
+        return check(start_page, end_page)
+    return checking_parameters
+
+
+@check_pages_numbers
 def parse_pages(start_page, end_page):
     page_url_template = 'https://tululu.org/l55/{}'
     book_ids = []
-    if end_page is None:
-        end_page = start_page + 10
-    if end_page <= start_page:
-        raise HTTPError('Параметр "end_page" должен быть больше "start_page"')
     for page_number in range(start_page, end_page):
         page_url = page_url_template.format(page_number)
         parsing_response = requests.get(page_url, verify=False)
@@ -196,7 +205,7 @@ def main():
     skip_imgs = args.skip_imgs
     logging.getLogger().setLevel(logging.INFO)
     if args.json_path:
-        logging.info(f'Путь к json файлу:' 
+        logging.info(f'Путь к json файлу:'
                      f'{book_descriptions_json_path}')
     if args.dest_folder:
         logging.info(f'Путь к скаченным книгам {books_path}')
