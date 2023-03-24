@@ -179,7 +179,7 @@ def download_book_descriptions(
     else:
         download_image(parsed_book_description['image_url'],
                     script_path)
-    return(book_descriptions)
+    return book_descriptions
 
 
 def main():
