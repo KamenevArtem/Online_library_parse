@@ -50,6 +50,11 @@ def parse_arg_main():
     return arg
 
 
+def check_for_redirect(response):
+    if response.is_redirect:
+        raise HTTPError(response.status_code, 'Переадресация')
+
+
 def parse_book_ids(page_html):
     url = 'https://tululu.org/'
     books = page_html.select('table.d_book')
@@ -78,6 +83,7 @@ def parse_pages(start_page, end_page):
     for page_number in range(start_page, end_page):
         page_url = page_url_template.format(page_number)
         parsing_response = requests.get(page_url, verify=False)
+        check_for_redirect(parsing_response)
         parsing_response.raise_for_status()
         page_html = BeautifulSoup(parsing_response.text, 'lxml')
         book_ids.append(parse_book_ids(page_html))
@@ -93,11 +99,6 @@ def define_extension(file_url):
     file_path, file_extension = os.path.splitext(parsed_path)
     file_name = file_path.split('/')[2]
     return file_extension, file_name
-
-
-def check_for_redirect(response):
-    if response.is_redirect:
-        raise HTTPError(response.status_code, 'Переадресация')
 
 
 @retry(TimeoutError, ConnectionError,
