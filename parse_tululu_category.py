@@ -154,8 +154,8 @@ def parse_book_page(page_html, book_url):
 @retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
 def download_book_descriptions(url_template, book_id,
-                               script_path, book_descriptions,
-                               skip_txts, skip_imgs):
+                               script_path, skip_txts,
+                               skip_imgs):
     book_url = url_template.format('txt.php')
     param = {
         'id': book_id,
@@ -178,14 +178,13 @@ def download_book_descriptions(url_template, book_id,
         page_html,
         parsing_url
         )
-    book_descriptions.append(parsed_book_description)
     if not skip_txts:
         download_txt(book_text, script_path,
                      parsed_book_description['title'])
     if not skip_imgs:
         download_image(parsed_book_description['image_url'],
                        script_path)
-    return book_descriptions
+    return parsed_book_description
 
 
 def main():
@@ -211,7 +210,7 @@ def main():
     book_descriptions = []
     for book_id in book_ids:
         try:
-            book_descriptions = download_book_descriptions(
+            parsed_book_description = download_book_descriptions(
                 url_template,
                 book_id,
                 books_path,
@@ -219,6 +218,7 @@ def main():
                 skip_txts,
                 skip_imgs
                 )
+            book_descriptions.append(parsed_book_description)
         except HTTPError as error:
             logging.error(msg=f'Была обнаружена ошибка {error}')
     with open(book_descriptions_json_path,
