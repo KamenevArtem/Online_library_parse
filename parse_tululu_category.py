@@ -20,32 +20,38 @@ def parse_arg_main():
     parser = argparse.ArgumentParser(
         description='Download books from tululu.org'
         )
-    parser.add_argument('-stp', '--start_page', nargs='?',
-                        help='First page to download',
-                        default=1,
-                        type=int
-                        )
-    parser.add_argument('-enp', '--end_page', nargs='?',
-                        help='Last page to download',
-                        type=int
-                        )
-    parser.add_argument('-df', '--dest_folder',
-                        help='Путь к каталогу с результатами парсинга',
-                        action='store_true',
-                        )
-    parser.add_argument('-si', '--skip_imgs',
-                        help='Не скачивать обложки книг',
-                        action='store_true',
-                        )
-    parser.add_argument('-st', '--skip_txts',
-                        help='Не скачивать тексты книг',
-                        action='store_true',
-                        )
-    parser.add_argument('-jp', '--json_path',
-                        help='Полный путь к json файлу,'
-                        'содержащему данные по всем скачанным книгам',
-                        action='store_true',
-                        )
+    parser.add_argument(
+        '-stp', '--start_page', nargs='?',
+        help='First page to download',
+        default=1,
+        type=int
+        )
+    parser.add_argument(
+        '-enp', '--end_page', nargs='?',
+        help='Last page to download',
+        type=int
+        )
+    parser.add_argument(
+        '-df', '--dest_folder',
+        help='Путь к каталогу с результатами парсинга',
+        action='store_true',
+        )
+    parser.add_argument(
+        '-si', '--skip_imgs',
+        help='Не скачивать обложки книг',
+        action='store_true',
+        )
+    parser.add_argument(
+        '-st', '--skip_txts',
+        help='Не скачивать тексты книг',
+        action='store_true',
+        )
+    parser.add_argument(
+        '-jp', '--json_path',
+        help='Полный путь к json файлу,'
+        'содержащему данные по всем скачанным книгам',
+        action='store_true',
+        )
     arg = parser.parse_args()
     return arg
 
@@ -66,7 +72,7 @@ def parse_book_ids(page_html):
 
 def check_pages_numbers(check):
     def checking_parameters(start_page, end_page):
-        if end_page is None:
+        if not end_page:
             end_page = start_page + 10
             return end_page
         if end_page <= start_page:
@@ -74,6 +80,7 @@ def check_pages_numbers(check):
                             '"start_page"')
         return check(start_page, end_page)
     return checking_parameters
+
 
 @retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
@@ -226,7 +233,7 @@ def main():
         sort_keys=True,
         )
     with open(book_descriptions_json_path,
-                'w', encoding='utf8') as json_file:
+              'w', encoding='utf8') as json_file:
         json_file.write(book_descriptions_json)
 
 
