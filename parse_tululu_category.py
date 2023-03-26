@@ -2,6 +2,8 @@ import argparse
 import json
 import logging
 import os
+import sys
+import time
 import urllib
 from urllib.parse import urljoin
 from urllib.parse import urlparse
@@ -72,7 +74,7 @@ def parse_book_ids(page_html):
 
 def checking_parameters(start_page, end_page):
     if end_page and end_page > start_page:
-        return
+        return end_page
     else:
         end_page = start_page + 1
         return end_page
@@ -81,16 +83,23 @@ def checking_parameters(start_page, end_page):
 @retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
 def parse_pages(start_page, end_page):
-    page_url_template = 'https://tululu.org/l55/{}'
+    page_url_template = 'https://tululu.org/l55/sdfsdf{}'
     book_ids = []
     end_page = checking_parameters(start_page, end_page)
     for page_number in range(start_page, end_page):
         page_url = page_url_template.format(page_number)
-        parsing_response = requests.get(page_url, verify=False)
-        check_for_redirect(parsing_response)
-        parsing_response.raise_for_status()
-        page_html = BeautifulSoup(parsing_response.text, 'lxml')
-        book_ids.extend(parse_book_ids(page_html))
+        try:
+            parsing_response = requests.get(page_url, verify=False)
+            check_for_redirect(parsing_response)
+            parsing_response.raise_for_status()
+            page_html = BeautifulSoup(parsing_response.text, 'lxml')
+            book_ids.extend(parse_book_ids(page_html))
+        except HTTPError as error:
+            sys.stderr.write(f'{error}')
+            continue
+        except ConnectionError as error:
+            time.sleep(2)
+            sys.stderr.write(f'{error}')
     return book_ids
 
 
@@ -154,8 +163,7 @@ def parse_book_page(page_html, book_url):
 @retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
 def download_book_descriptions(url_template, book_id,
-                               script_path, skip_txts,
-                               skip_imgs):
+                               script_path, skip_txts, skip_imgs):
     book_url = url_template.format('txt.php')
     param = {
         'id': book_id,
@@ -214,7 +222,6 @@ def main():
                 url_template,
                 book_id,
                 books_path,
-                book_descriptions,
                 skip_txts,
                 skip_imgs
                 )
