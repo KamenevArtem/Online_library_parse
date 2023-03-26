@@ -70,24 +70,20 @@ def parse_book_ids(page_html):
     return book_ids
 
 
-def check_pages_numbers(check):
-    def checking_parameters(start_page, end_page):
-        if not end_page:
-            end_page = start_page + 10
-            return end_page
-        if end_page <= start_page:
-            raise HTTPError('Параметр "end_page" должен быть больше'
-                            '"start_page"')
-        return check(start_page, end_page)
-    return checking_parameters
+def checking_parameters(start_page, end_page):
+    if end_page and end_page > start_page:
+        return
+    else:
+        end_page = start_page + 1
+        return end_page
 
 
 @retry(TimeoutError, ConnectionError,
        delay=1, backoff=4, max_delay=4)
-@check_pages_numbers
 def parse_pages(start_page, end_page):
     page_url_template = 'https://tululu.org/l55/{}'
     book_ids = []
+    end_page = checking_parameters(start_page, end_page)
     for page_number in range(start_page, end_page):
         page_url = page_url_template.format(page_number)
         parsing_response = requests.get(page_url, verify=False)
