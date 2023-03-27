@@ -80,12 +80,9 @@ def checking_parameters(start_page, end_page):
         return end_page
 
 
-@retry(TimeoutError, ConnectionError,
-       delay=1, backoff=4, max_delay=4)
 def parse_pages(start_page, end_page):
-    page_url_template = 'https://tululu.org/l55/sdfsdf{}'
+    page_url_template = 'https://tululu.org/l55/{}'
     book_ids = []
-    end_page = checking_parameters(start_page, end_page)
     for page_number in range(start_page, end_page):
         page_url = page_url_template.format(page_number)
         try:
@@ -208,6 +205,7 @@ def main():
     end_page = args.end_page
     skip_txts = args.skip_txts
     skip_imgs = args.skip_imgs
+    end_page = checking_parameters(start_page, end_page)
     logging.getLogger().setLevel(logging.INFO)
     if args.json_path:
         logging.info(f'Путь к json файлу:'
