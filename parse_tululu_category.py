@@ -203,6 +203,7 @@ def main():
     args = parse_arg_main()
     start_page = args.start_page
     end_page = args.end_page
+    end_page = checking_parameters(start_page, end_page)
     skip_txts = args.skip_txts
     skip_imgs = args.skip_imgs
     end_page = checking_parameters(start_page, end_page)
