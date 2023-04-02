@@ -7,7 +7,24 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+    <div class='container'>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          {%if page_id-1 in number_of_pages%}
+            <li class="page-item"><a class="page-link border bg-light" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">{{page_id-1}}</a></li>
+          {%endif%}
+          <li class="page-item"><a class="page-link" href="#">{{page_id}}</a></li>
+          {%if page_id+1 in number_of_pages%}
+          <li class="page-item"><a class="page-link" href="#">{{page_id+1}}</a></li>
+          {%if page_id+2 in number_of_pages%}
+          <li class="page-item"><a class="page-link" href="#">{{page_id+2}}</a></li>
+          {%endif%}
+          <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          {%endif%}
+        </ul>
+      </nav>
+    </div>
     <title>Book</title>
   </head>
   <body>
@@ -24,7 +41,7 @@
                 <div class="card-body">
                   <h5 class="card-title">{{books_in_raw[0]['title']}}</h5>
                   <p class="card-text">{{books_in_raw[0]['author']}}</p>
-                  <p><a href="./books/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt" target="_blank">Читать</a></p>
+                  <p><a href="{{books_path}}/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt" target="_blank">Читать</a></p>
                 </div>
               </div>
             </div>
@@ -41,7 +58,7 @@
                 <div class="card-body">
                   <h5 class="card-title">{{books_in_raw[1]['title']}}</h5>
                   <p class="card-text">{{books_in_raw[1]['author']}}</p>
-                  <p><a href="./books/books_txts/{{books_in_raw[1]['title']|urlencode}}.txt"target="_blank">Читать</a></p>
+                  <p><a href="{{books_path}}/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt"target="_blank">Читать</a></p>
                 </div>
               </div>
             </div>
