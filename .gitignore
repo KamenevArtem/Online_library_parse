@@ -23,6 +23,7 @@ var/
 wheels/
 books/
 images/
+pages/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
