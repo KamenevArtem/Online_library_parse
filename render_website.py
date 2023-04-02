@@ -1,8 +1,10 @@
 import json
 import pathlib
 from pathlib import Path
+from pprint import pprint
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from more_itertools import chunked
 from livereload import Server
 
 
@@ -16,13 +18,14 @@ def render_html():
             "r", encoding='utf8') as json_file:
         books_descriptions = json_file.read()
     books = json.loads(books_descriptions)
+    books_iterable = list(chunked(books, 2, strict=False))
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template('template.html')
     rendered_page = template.render(
-        books_descriptions=books,
+        books_descriptions=books_iterable,
     )
     with open('index.html', 'w', encoding="utf8") as file:
         file.write(rendered_page)
