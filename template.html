@@ -7,24 +7,24 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <div class='container'>
       <nav aria-label="Page navigation example">
-        <ul class="pagination">
+        <ul class="pagination mx-auto" style="width: 200px">
           {%if page_id-1 in number_of_pages%}
-            <li class="page-item"><a class="page-link border bg-light" href="#">Previous</a></li>
-            <li class="page-item"><a class="page-link" href="#">{{page_id-1}}</a></li>
+            <li class="page-item"><a class="page-link" href="./index{{page_id-1}}.html">Предыдущая</a></li>
+            <li class="page-item"><a class="page-link" href="./index{{page_id-1}}.html">{{page_id-1}}</a></li>
           {%endif%}
-          <li class="page-item"><a class="page-link" href="#">{{page_id}}</a></li>
+          <li class="page-item active" aria-current="page">
+            <a class="page-link" href="./index{{page_id}}.html">{{page_id}} <span class="sr-only">(current)</span></a>
+          </li>
           {%if page_id+1 in number_of_pages%}
-          <li class="page-item"><a class="page-link" href="#">{{page_id+1}}</a></li>
+          <li class="page-item"><a class="page-link" href="./index{{page_id+1}}.html">{{page_id+1}}</a></li>
           {%if page_id+2 in number_of_pages%}
-          <li class="page-item"><a class="page-link" href="#">{{page_id+2}}</a></li>
+          <li class="page-item"><a class="page-link" href="./index{{page_id+2}}.html">{{page_id+2}}</a></li>
           {%endif%}
-          <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          <li class="page-item"><a class="page-link" href="./index{{page_id+1}}.html">Следующая</a></li>
           {%endif%}
         </ul>
       </nav>
-    </div>
     <title>Book</title>
   </head>
   <body>
