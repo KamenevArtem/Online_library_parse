@@ -45,7 +45,7 @@ python render_website.py
 
 Сайт имеет следующий вид:
 
-![image info](./Безымянный.png)
+![image](https://i.ibb.co/ftztkQP/image.png)
 
 ## Цель проекта
 
