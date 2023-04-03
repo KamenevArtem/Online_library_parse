@@ -7,6 +7,8 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="../logo.png" sizes="16x16">
+    <title>Books: Page {{page_id}}</title>
     <hr/>
       <nav aria-label="Page navigation example">
         <ul class="pagination mx-auto" style="width: 1000px">
@@ -26,7 +28,6 @@
           {%endif%}
         </ul>
       </nav>
-    <title>Book</title>
   </head>
   <body>
     {%for books_in_raw in books_descriptions%}
