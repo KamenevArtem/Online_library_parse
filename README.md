@@ -33,6 +33,20 @@ python download_books_from_tululu.py
 python download_books_from_tululu.py -stp [Значение] -enp [Значение]
 ```
 
+Для формирования html-шаблонов необходимо запустить команду:
+
+```
+python render_website.py
+```
+
+Далее в папке `/pages` будут сформированы шаблоны страниц сайта. Каждая страница содержит максимум 10 книг.
+
+Чтобы ознакомиться с работой сайта, необходимо пройти по [ссылке](https://kamenevartem.github.io/Online_library_parse/pages/index1.html)
+
+Сайт имеет следующий вид:
+
+![image info](./Безымянный.png)
+
 ## Цель проекта
 
 Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [devman](https://devman.org/)
