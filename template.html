@@ -46,7 +46,7 @@
                   {%for book_genre in books_in_raw[0]['genre']%}
                     <h6><span class="badge badge-secondary">{{book_genre}}</span></h6>
                   {%endfor%}
-                  <p><a href="{{books_path}}/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt" target="_blank">Читать</a></p>
+                  <p><a href="../books/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt" target="_blank">Читать</a></p>
                 </div>
               </div>
             </div>
@@ -66,7 +66,7 @@
                   {%for book_genre in books_in_raw[1]['genre']%}
                     <h6><span class="badge badge-secondary">{{book_genre}}</span></h6>
                   {%endfor%}
-                  <p><a href="{{books_path}}/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt"target="_blank">Читать</a></p>
+                  <p><a href="../books/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt"target="_blank">Читать</a></p>
                 </div>
               </div>
             </div>
