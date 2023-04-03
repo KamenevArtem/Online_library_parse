@@ -7,8 +7,9 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <hr/>
       <nav aria-label="Page navigation example">
-        <ul class="pagination mx-auto" style="width: 200px">
+        <ul class="pagination mx-auto" style="width: 1000px">
           {%if page_id-1 in number_of_pages%}
             <li class="page-item"><a class="page-link" href="./index{{page_id-1}}.html">Предыдущая</a></li>
             <li class="page-item"><a class="page-link" href="./index{{page_id-1}}.html">{{page_id-1}}</a></li>
@@ -41,6 +42,9 @@
                 <div class="card-body">
                   <h5 class="card-title">{{books_in_raw[0]['title']}}</h5>
                   <p class="card-text">{{books_in_raw[0]['author']}}</p>
+                  {%for book_genre in books_in_raw[0]['genre']%}
+                    <h6><span class="badge badge-secondary">{{book_genre}}</span></h6>
+                  {%endfor%}
                   <p><a href="{{books_path}}/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt" target="_blank">Читать</a></p>
                 </div>
               </div>
@@ -58,6 +62,9 @@
                 <div class="card-body">
                   <h5 class="card-title">{{books_in_raw[1]['title']}}</h5>
                   <p class="card-text">{{books_in_raw[1]['author']}}</p>
+                  {%for book_genre in books_in_raw[1]['genre']%}
+                    <h6><span class="badge badge-secondary">{{book_genre}}</span></h6>
+                  {%endfor%}
                   <p><a href="{{books_path}}/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt"target="_blank">Читать</a></p>
                 </div>
               </div>

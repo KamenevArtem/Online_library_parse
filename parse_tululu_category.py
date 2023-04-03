@@ -146,12 +146,15 @@ def parse_book_page(page_html, book_url):
     parsed_comments = page_html.select('div.texts')
     comments = [comment.select_one('span').text
                 for comment in parsed_comments]
-    book_genres = page_html.select_one('span.d_book a')
+    book_genres = page_html.select('span.d_book a')
+    genres = []
+    for book_genre in book_genres:
+        genres.append(book_genre.text)
     parsed_book_description = {
         'title': book_title,
         'author': book_author,
         'image_url': book_image_url,
-        'genre': book_genres.text,
+        'genre': genres,
         'comments': comments,
     }
     return parsed_book_description
