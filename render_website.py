@@ -35,7 +35,6 @@ def render_html():
             books_descriptions=books_iterable,
             page_id=page_id+1,
             number_of_pages=page_numbers,
-            books_path=books_path
         )
         with open(Path(html_templates_path).joinpath(template_name),
                   'w', encoding="utf8") as file:
