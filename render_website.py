@@ -1,7 +1,6 @@
 import json
 import pathlib
 from pathlib import Path
-from pprint import pprint
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from more_itertools import chunked
