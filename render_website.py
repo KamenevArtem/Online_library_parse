@@ -36,7 +36,7 @@ def render_html():
             number_of_pages=page_numbers,
         )
         with open(Path(html_pages_path).joinpath(template_name),
-                  'w', encoding="utf8") as file:
+                  'w', encoding='utf8') as file:
             file.write(rendered_page)
 
 
