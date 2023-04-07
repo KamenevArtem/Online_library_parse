@@ -14,8 +14,8 @@ def render_html():
     book_descriptions_json_path = Path(books_path).joinpath(
         'book_descriptions.json'
         )
-    html_templates_path = script_path.joinpath('pages')
-    html_templates_path.mkdir(exist_ok=True)
+    html_pages_path = script_path.joinpath('pages')
+    html_pages_path.mkdir(exist_ok=True)
     with open(book_descriptions_json_path,
             "r", encoding='utf8') as json_file:
         books_descriptions = json_file.read()
@@ -24,18 +24,18 @@ def render_html():
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template('template.html')
-    books = json.loads(books_descriptions)
-    divided_books_per_page = list(chunked(books, 10, strict=False))
-    for page_id, books_per_page in enumerate(divided_books_per_page):
-        books_iterable = list(chunked(books_per_page, 2, strict=False))
+    books_descriptions = json.loads(books_descriptions)
+    books_descriptions = list(chunked(books_descriptions, 10, strict=False))
+    for page_id, books_descriptions_per_page in enumerate(books_descriptions):
+        books_descriptions_in_row = list(chunked(books_descriptions_per_page, 2, strict=False))
         template_name = sanitize_filename(f'index{page_id+1}.html')
-        page_numbers = range(1, len(divided_books_per_page)+1)
+        page_numbers = range(1, len(books_descriptions_in_row)+1)
         rendered_page = template.render(
-            books_descriptions=books_iterable,
+            books_descriptions=books_descriptions_in_row,
             page_id=page_id+1,
             number_of_pages=page_numbers,
         )
-        with open(Path(html_templates_path).joinpath(template_name),
+        with open(Path(html_pages_path).joinpath(template_name),
                   'w', encoding="utf8") as file:
             file.write(rendered_page)
 
