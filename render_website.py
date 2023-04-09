@@ -7,15 +7,15 @@ from more_itertools import chunked
 from livereload import Server
 from pathvalidate import sanitize_filename
 
+BOOK_DESCRIPTIONS_JSON_PATH = pathlib.Path.cwd().joinpath(
+        'book_descriptions.json'
+        )
 
 def render_html():
     script_path = pathlib.Path.cwd()
-    book_descriptions_json_path = script_path.joinpath(
-        'book_descriptions.json'
-        )
     html_pages_path = script_path.joinpath('pages')
     html_pages_path.mkdir(exist_ok=True)
-    with open(book_descriptions_json_path,
+    with open(BOOK_DESCRIPTIONS_JSON_PATH,
             "r", encoding='utf8') as json_file:
         books_descriptions = json_file.read()
     env = Environment(
