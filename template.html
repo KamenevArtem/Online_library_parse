@@ -7,7 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="icon" type="image/png" href="../logo.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="../static/logo.png" sizes="16x16">
     <title>Books: Page {{page_id}}</title>
     <hr/>
       <nav aria-label="Page navigation example">
@@ -46,7 +46,7 @@
                     {%for book_genre in books_in_raw[0]['genre']%}
                       <h6><span class="badge badge-secondary">{{book_genre}}</span></h6>
                     {%endfor%}
-                    <p><a href="../books/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt" target="_blank">Читать</a></p>
+                    <p><a href="../media/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt" target="_blank">Читать</a></p>
                   </div>
                 </div>
               </div>
@@ -66,7 +66,7 @@
                       {%for book_genre in books_in_raw[1]['genre']%}
                         <h6><span class="badge badge-secondary">{{book_genre}}</span></h6>
                       {%endfor%}
-                      <p><a href="../books/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt"target="_blank">Читать</a></p>
+                      <p><a href="../media/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt"target="_blank">Читать</a></p>
                     </div>
                   </div>
                 </div>

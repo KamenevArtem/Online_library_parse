@@ -10,8 +10,7 @@ from pathvalidate import sanitize_filename
 
 def render_html():
     script_path = pathlib.Path.cwd()
-    books_path = script_path.joinpath('books')
-    book_descriptions_json_path = Path(books_path).joinpath(
+    book_descriptions_json_path = script_path.joinpath(
         'book_descriptions.json'
         )
     html_pages_path = script_path.joinpath('pages')
@@ -25,11 +24,12 @@ def render_html():
     )
     template = env.get_template('template.html')
     books_descriptions = json.loads(books_descriptions)
-    books_descriptions = list(chunked(books_descriptions, 10, strict=False))
-    for page_id, books_descriptions_per_page in enumerate(books_descriptions):
+    splitted_books_descriptions = list(chunked(books_descriptions, 10, strict=False))
+    page_numbers = range(1, len(splitted_books_descriptions)+1)
+    for page_id, books_descriptions_per_page in enumerate(splitted_books_descriptions):
         books_descriptions_in_row = list(chunked(books_descriptions_per_page, 2, strict=False))
         template_name = sanitize_filename(f'index{page_id+1}.html')
-        page_numbers = range(1, len(books_descriptions_in_row)+1)
+        
         rendered_page = template.render(
             books_descriptions=books_descriptions_in_row,
             page_id=page_id+1,
