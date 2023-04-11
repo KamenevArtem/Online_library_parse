@@ -34,7 +34,6 @@ def render_html():
             page_id=page_id+1,
             number_of_pages=page_numbers,
         )
-        print(books_descriptions_in_row[0][0]['image_name'])
         with open(Path(html_pages_path).joinpath(template_name),
                   'w', encoding='utf8') as file:
             file.write(rendered_page)

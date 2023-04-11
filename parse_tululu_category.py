@@ -131,7 +131,7 @@ def download_image(url, books_path):
     file_path = books_path.joinpath('images')
     file_path.mkdir(exist_ok=True)
     file_extension, image_name = define_extension(url)
-    image_name = (f'{image_name}.{file_extension}')
+    image_name = (f'{image_name}{file_extension}')
     with open(Path(file_path).joinpath(image_name),
               'wb') as image:
         image.write(image_response.content)
