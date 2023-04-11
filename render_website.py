@@ -11,6 +11,7 @@ BOOK_DESCRIPTIONS_JSON_PATH = pathlib.Path.cwd().joinpath(
         'book_descriptions.json'
         )
 
+
 def render_html():
     books_quantity_per_page = 10
     books_quantity_per_row = 2
@@ -18,7 +19,7 @@ def render_html():
     html_pages_path = script_path.joinpath('pages')
     html_pages_path.mkdir(exist_ok=True)
     with open(BOOK_DESCRIPTIONS_JSON_PATH,
-            "r", encoding='utf8') as json_file:
+              "r", encoding='utf8') as json_file:
         books_descriptions = json.load(json_file)
     env = Environment(
         loader=FileSystemLoader('.'),
@@ -31,7 +32,9 @@ def render_html():
         strict=False
         ))
     page_numbers = range(1, len(splitted_books_descriptions)+1)
-    for page_id, books_descriptions_per_page in enumerate(splitted_books_descriptions, start=1):
+    for page_id, books_descriptions_per_page \
+        in enumerate(splitted_books_descriptions,
+                     start=1):
         books_descriptions_in_row = list(chunked(
             books_descriptions_per_page,
             books_quantity_per_row,
@@ -57,4 +60,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
