@@ -17,13 +17,12 @@ def render_html():
     html_pages_path.mkdir(exist_ok=True)
     with open(BOOK_DESCRIPTIONS_JSON_PATH,
             "r", encoding='utf8') as json_file:
-        books_descriptions = json_file.read()
+        books_descriptions = json.load(json_file)
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template('template.html')
-    books_descriptions = json.loads(books_descriptions)
     splitted_books_descriptions = list(chunked(books_descriptions, 10, strict=False))
     page_numbers = range(1, len(splitted_books_descriptions)+1)
     for page_id, books_descriptions_per_page in enumerate(splitted_books_descriptions):
