@@ -30,43 +30,43 @@
       </nav>
   </head>
   <body>
-    {%for books_in_raw in books_descriptions%}
+    {%for books_in_row in books_descriptions%}
       <div class='container'>
         <div class="row">
           <div class="col-md">
             <div class="card mb-3" style="max-width: 540px;">
               <div class="row no-gutters">
                 <div class="col-md-4">
-                  <img src= '{{books_in_raw[0]['image_url']}}'  class="card-img" alt="Обложка книги">
+                  <img src= '../media/images/{{books_in_row[0]['image_name'] |urlencode}}' class="card-img" alt="Обложка книги" >
                 </div>
                 <div class="col-md-8">
                   <div class="card-body">
-                    <h5 class="card-title">{{books_in_raw[0]['title']}}</h5>
-                    <p class="card-text">{{books_in_raw[0]['author']}}</p>
-                    {%for book_genre in books_in_raw[0]['genre']%}
+                    <h5 class="card-title">{{books_in_row[0]['title']}}</h5>
+                    <p class="card-text">{{books_in_row[0]['author']}}</p>
+                    {%for book_genre in books_in_row[0]['genre']%}
                       <h6><span class="badge badge-secondary">{{book_genre}}</span></h6>
                     {%endfor%}
-                    <p><a href="../media/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt" target="_blank">Читать</a></p>
+                    <p><a href="../media/books_txts/{{books_in_row[0]['title']|urlencode}}.txt" target="_blank">Читать</a></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          {%if books_in_raw[1]%}
+          {%if books_in_row[1]%}
             <div class="col-md">
               <div class="card mb-3" style="max-width: 540px;">
                 <div class="row no-gutters">
                   <div class="col-md-4">
-                    <img src= '{{books_in_raw[1]['image_url']}}' class="card-img" alt="Обложка книги">
+                    <img src= '../media/images/{{books_in_row[1]['image_name'] |urlencode}}' class="card-img" alt="Обложка книги">
                   </div>
                   <div class="col-md-8">
                     <div class="card-body">
-                      <h5 class="card-title">{{books_in_raw[1]['title']}}</h5>
-                      <p class="card-text">{{books_in_raw[1]['author']}}</p>
-                      {%for book_genre in books_in_raw[1]['genre']%}
+                      <h5 class="card-title">{{books_in_row[1]['title']}}</h5>
+                      <p class="card-text">{{books_in_row[1]['author']}}</p>
+                      {%for book_genre in books_in_row[1]['genre']%}
                         <h6><span class="badge badge-secondary">{{book_genre}}</span></h6>
                       {%endfor%}
-                      <p><a href="../media/books_txts/{{books_in_raw[0]['title']|urlencode}}.txt"target="_blank">Читать</a></p>
+                      <p><a href="../media/books_txts/{{books_in_row[0]['title']|urlencode}}.txt" target="_blank">Читать</a></p>
                     </div>
                   </div>
                 </div>

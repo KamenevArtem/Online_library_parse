@@ -142,6 +142,7 @@ def parse_book_page(page_html, book_url):
     book_description = book_description.text.split(' \xa0 :: \xa0 ')
     book_title, book_author = book_description
     book_image = page_html.select_one('div.bookimage img')['src']
+    image_name = book_image.split('/')[2]
     book_image_url = urljoin(book_url, book_image)
     parsed_comments = page_html.select('div.texts')
     comments = [comment.select_one('span').text
@@ -156,6 +157,7 @@ def parse_book_page(page_html, book_url):
         'image_url': book_image_url,
         'genre': genres,
         'comments': comments,
+        'image_name': image_name,
     }
     return parsed_book_description
 
@@ -197,7 +199,7 @@ def download_book_descriptions(url_template, book_id,
 
 def main():
     script_path = pathlib.Path.cwd()
-    books_path = script_path.joinpath('books')
+    books_path = script_path.joinpath('media')
     books_path.mkdir(exist_ok=True)
     book_descriptions_json_path = Path(books_path).joinpath(
         'book_descriptions.json'
