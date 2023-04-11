@@ -40,6 +40,8 @@ def render_html():
             books_quantity_per_row,
             strict=False
             ))
+        if len(books_descriptions_in_row[-1]) == 1:
+            books_descriptions_in_row[-1].append('')
         template_name = sanitize_filename(f'index{page_id}.html')
         rendered_page = template.render(
             books_descriptions=books_descriptions_in_row,
