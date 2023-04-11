@@ -12,6 +12,8 @@ BOOK_DESCRIPTIONS_JSON_PATH = pathlib.Path.cwd().joinpath(
         )
 
 def render_html():
+    books_quantity_per_page = 10
+    books_quantity_per_row = 2
     script_path = pathlib.Path.cwd()
     html_pages_path = script_path.joinpath('pages')
     html_pages_path.mkdir(exist_ok=True)
@@ -23,10 +25,18 @@ def render_html():
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template('template.html')
-    splitted_books_descriptions = list(chunked(books_descriptions, 10, strict=False))
+    splitted_books_descriptions = list(chunked(
+        books_descriptions,
+        books_quantity_per_page,
+        strict=False
+        ))
     page_numbers = range(1, len(splitted_books_descriptions)+1)
     for page_id, books_descriptions_per_page in enumerate(splitted_books_descriptions):
-        books_descriptions_in_row = list(chunked(books_descriptions_per_page, 2, strict=False))
+        books_descriptions_in_row = list(chunked(
+            books_descriptions_per_page,
+            books_quantity_per_row,
+            strict=False
+            ))
         template_name = sanitize_filename(f'index{page_id+1}.html')
         rendered_page = template.render(
             books_descriptions=books_descriptions_in_row,
