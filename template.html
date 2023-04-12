@@ -56,19 +56,21 @@
           <div class="col-md">
             <div class="card mb-3" style="max-width: 540px;">
               <div class="row no-gutters">
-                <div class="col-md-4">
-                  <img src= '../media/images/{{book_right_column['image_name'] |urlencode}}' class="card-img" alt="Обложка книги">
-                </div>
-                <div class="col-md-8">
-                  <div class="card-body">
-                    <h5 class="card-title">{{book_right_column['title']}}</h5>
-                    <p class="card-text">{{book_right_column['author']}}</p>
-                    {%for book_genre in book_right_column['genre']%}
-                      <h6><span class="badge badge-secondary">{{book_genre}}</span></h6>
-                    {%endfor%}
-                    <p><a href="../media/books_txts/{{book_right_column['title']|urlencode}}.txt" target="_blank">Читать</a></p>
+                {%if book_right_column%}
+                  <div class="col-md-4">
+                    <img src= '../media/images/{{book_right_column['image_name'] |urlencode}}' class="card-img" alt="Обложка книги">
                   </div>
-                </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">{{book_right_column['title']}}</h5>
+                      <p class="card-text">{{book_right_column['author']}}</p>
+                      {%for book_genre in book_right_column['genre']%}
+                        <h6><span class="badge badge-secondary">{{book_genre}}</span></h6>
+                      {%endfor%}
+                      <p><a href="../media/books_txts/{{book_right_column['title']|urlencode}}.txt" target="_blank">Читать</a></p>
+                    </div>
+                  </div>
+                {%endif%}
               </div>
             </div>
           </div>
